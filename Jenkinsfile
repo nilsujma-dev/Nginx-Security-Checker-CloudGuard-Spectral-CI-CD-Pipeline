@@ -40,7 +40,7 @@ pipeline {
                 script {
                     try {
                         sh 'chmod +x shiftleft'
-                        sh './shiftleft image-scan -t 180 -i nginx.tar -r 13142 -e 4b89d765-1dfd-4c19-bf26-a34374142d42'
+                        sh './shiftleft image-scan -t 180 -i nginx.tar -r 13172 -e 4b89d765-1dfd-4c19-bf26-a34374142d42'
                     } catch (Exception e) {
                         echo "ShiftLeft docker image scan failed."
                     }
