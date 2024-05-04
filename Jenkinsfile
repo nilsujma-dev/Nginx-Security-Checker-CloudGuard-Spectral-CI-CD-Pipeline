@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         // Use Jenkins credentials binding
-        CHKP_CLOUDGUARD_ID = credentials('chkp-cloudguard-id')
-        CHKP_CLOUDGUARD_SECRET = credentials('chkp-cloudguard-secret')
+        CHKP_CLOUDGUARD_ID = credentials('CHKP_CLOUDGUARD_ID')
+        CHKP_CLOUDGUARD_SECRET = credentials('CHKP_CLOUDGUARD_SECRET')
         SHIFTLEFT_REGION = "us1"
-        SPECTRAL_DSN = credentials('spectral-dsn')
+        SPECTRAL_DSN = credentials('SPECTRAL_DSN')
     }
 
     stages {
