@@ -19,7 +19,7 @@ pipeline {
 
         stage('install Spectral') {
             steps {
-                sh "curl -L 'https://spectral-eu.checkpoint.com/latest/x/sh?dsn=$SPECTRAL_KEY' | sh"
+                sh "curl -L 'https://spectral-us.checkpoint.com/latest/x/sh?key=$SPECTRAL_KEY' | sh"
             }
         }
 
