@@ -5,7 +5,7 @@ pipeline {
         // Use Jenkins credentials binding
         CHKP_CLOUDGUARD_ID = credentials('chkp-cloudguard-id')
         CHKP_CLOUDGUARD_SECRET = credentials('chkp-cloudguard-secret')
-        SHIFTLEFT_REGION = "eu1"
+        SHIFTLEFT_REGION = "us1"
         SPECTRAL_DSN = credentials('spectral-dsn')
     }
 
