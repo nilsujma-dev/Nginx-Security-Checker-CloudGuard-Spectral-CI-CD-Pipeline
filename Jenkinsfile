@@ -36,6 +36,14 @@ pipeline {
             }
         }
 
+        stage('Print Environment') {
+            steps {
+                sh 'env'
+                sh 'pwd'
+                sh 'ls -l'
+            }
+        }
+        
         stage('ShiftLeft Container Image Scan Online') {
             steps {
                 script {
