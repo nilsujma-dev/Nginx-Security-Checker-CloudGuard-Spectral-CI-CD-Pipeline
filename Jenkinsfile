@@ -48,8 +48,11 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'chmod +x shiftleft'
-                        sh 'shiftleft image-scan -e 5c43dd24-8b60-4a44-b012-d1d3bc4b36cb -i nginx.tar'
+                        sh 'chmod +xxx shiftleft'
+                        sh 'env'
+                        sh 'pwd'
+                        sh 'ls -la'
+                        sh './shiftleft image-scan -e 5c43dd24-8b60-4a44-b012-d1d3bc4b36cb -i nginx.tar'
                     } catch (Exception e) {
                         echo "ShiftLeft docker image scan failed."
                     }
