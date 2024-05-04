@@ -7,6 +7,7 @@ pipeline {
         CHKP_CLOUDGUARD_SECRET = credentials('CHKP_CLOUDGUARD_SECRET')
         SHIFTLEFT_REGION = "us1"
         SPECTRAL_DSN = credentials('SPECTRAL_DSN')
+        SPECTRAL_KEY = credentials('SPECTRAL_KEY')
     }
 
     stages {
@@ -18,7 +19,7 @@ pipeline {
 
         stage('install Spectral') {
             steps {
-                sh "curl -L 'https://spectral-eu.checkpoint.com/latest/x/sh?dsn=$SPECTRAL_DSN' | sh"
+                sh "curl -L 'https://spectral-eu.checkpoint.com/latest/x/sh?dsn=$SPECTRAL_KEY' | sh"
             }
         }
 
