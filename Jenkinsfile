@@ -35,14 +35,6 @@ pipeline {
                 sh 'docker save nilsujma/nginx -o nginx.tar'
             }
         }
-
-        stage('Print Environment') {
-            steps {
-                sh 'env'
-                sh 'pwd'
-                sh 'ls -l'
-            }
-        }
         
         stage('ShiftLeft Container Image Scan Online') {
             steps {
@@ -60,18 +52,6 @@ pipeline {
             }
         }
 
-        stage('Shiftleft Container Image Scan Offline') {
-            steps {
-                script {
-                    try {
-                        sh 'chmod +x shiftleft'
-                        sh 'shiftleft image-scan -e 5c43dd24-8b60-4a44-b012-d1d3bc4b36cb -i nginx.tar'
-                    } catch (Exception e) {
-                        echo "ShiftLeft docker Image scan failed."
-                    }
-                }
-            }
-        }
         stage('Post-Build Spectral Scan for Secrets,Misconfiguration and IaC') {
             steps {
                 sh "$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
