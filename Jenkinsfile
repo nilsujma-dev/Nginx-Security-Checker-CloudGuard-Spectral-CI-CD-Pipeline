@@ -31,8 +31,8 @@ pipeline {
 
         stage('Docker image Build and scan prep') {
             steps {
-                sh 'docker build -t nilsujma/nginx .'
-                sh 'docker save nilsujma/nginx -o nginx.tar'
+                sh 'docker build -t scb/nginx .'
+                sh 'docker save scb/nginx -o nginx.tar'
             }
         }
         
