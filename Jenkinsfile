@@ -11,6 +11,8 @@ pipeline {
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
 
+         }
+        
     stages {
         stage('Clone Github repository') {
             steps {
@@ -66,12 +68,9 @@ pipeline {
                     sh 'echo $DOCKER_PASSWORD | docker login scb-harbor.cpdevsecops.net --username $DOCKER_USERNAME --password-stdin'
                     sh 'docker tag scb/nginx scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
                     sh 'docker push scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
+
+                        }
+                    }
         }
-    }
-}
-
-
-
-        
-    }
+    } 
 }
