@@ -8,7 +8,8 @@ pipeline {
         SHIFTLEFT_REGION = "us1"
         SPECTRAL_DSN = credentials('SPECTRAL_DSN')
         SPECTRAL_KEY = credentials('SPECTRAL_KEY')
-    }
+        DOCKER_USERNAME = credentials('DOCKER_USERNAME')
+        DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
 
     stages {
         stage('Clone Github repository') {
@@ -57,5 +58,20 @@ pipeline {
                 sh "$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
             }
         }
+
+
+        stage('Docker Login and Push Image') {
+            steps {
+                script {
+                    sh 'echo $DOCKER_PASSWORD | docker login scb-harbor.cpdevsecops.net --username $DOCKER_USERNAME --password-stdin'
+                    sh 'docker tag scb/nginx scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
+                    sh 'docker push scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
+        }
+    }
+}
+
+
+
+        
     }
 }
