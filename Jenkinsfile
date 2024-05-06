@@ -86,6 +86,8 @@ pipeline {
                     }
                 }
             }
+        }
+
 
         stage('Deploy to GKE') {
             steps {
@@ -99,5 +101,6 @@ pipeline {
                 }
             }
         }
+
     }
 }
