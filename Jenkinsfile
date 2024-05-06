@@ -10,6 +10,7 @@ pipeline {
         SPECTRAL_KEY = credentials('SPECTRAL_KEY')
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
+        GCR_JSON_KEY = credentials('GCR_JSON_KEY')
 
          }
         
@@ -72,5 +73,19 @@ pipeline {
                         }
                     }
         }
+
+        stage('Docker Login and Push Image to GCR') {
+            steps {
+                script {
+                    sh 'echo $GCR_JSON_KEY | docker login -u _json_key --password-stdin https://asia.gcr.io'
+                    sh 'docker tag scb/nginx asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'
+                    sh 'docker push asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'    
+                    
+                        }
+                    }
+        }
+
+                    
+    
     } 
 }
