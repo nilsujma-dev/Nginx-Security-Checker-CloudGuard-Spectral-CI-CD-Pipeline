@@ -11,9 +11,8 @@ pipeline {
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
         GCR_JSON_KEY = credentials('GCR_JSON_KEY')
+    }
 
-         }
-        
     stages {
         stage('Clone Github repository') {
             steps {
@@ -23,13 +22,13 @@ pipeline {
 
         stage('install Spectral') {
             steps {
-                sh "curl -L 'https://spectral-us.checkpoint.com/latest/x/sh?key=$SPECTRAL_KEY' | sh"
+                sh "curl -L 'https://spectral-us.checkpoint.com/latest/x/sh?key=\$SPECTRAL_KEY' | sh"
             }
         }
 
         stage('Pre-Build Spectral Scan for Secrets,Misconfiguration and IaC') {
             steps {
-                sh "$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
+                sh "\$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
             }
         }
 
@@ -39,7 +38,7 @@ pipeline {
                 sh 'docker save scb/nginx -o nginx.tar'
             }
         }
-        
+
         stage('ShiftLeft Container Image Scan Online') {
             steps {
                 script {
@@ -58,34 +57,30 @@ pipeline {
 
         stage('Post-Build Spectral Scan for Secrets,Misconfiguration and IaC') {
             steps {
-                sh "$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
+                sh "\$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
             }
         }
-
 
         stage('Docker Login and Push Image') {
             steps {
                 script {
-                    sh 'echo $DOCKER_PASSWORD | docker login scb-harbor.cpdevsecops.net --username $DOCKER_USERNAME --password-stdin'
+                    sh 'echo \$DOCKER_PASSWORD | docker login scb-harbor.cpdevsecops.net --username \$DOCKER_USERNAME --password-stdin'
                     sh 'docker tag scb/nginx scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
                     sh 'docker push scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
-
-                        }
-                    }
+                }
+            }
         }
 
         stage('Docker Login and Push Image to GCR') {
             steps {
                 script {
-                    sh 'echo $GCR_JSON_KEY | docker login -u _json_key --password-stdin https://asia.gcr.io'
-                    sh 'docker tag scb/nginx asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'
-                    sh 'docker push asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'    
-                    
-                        }
+                    withCredentials([file(credentialsId: 'GCR_JSON_KEY', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh 'cat \$GOOGLE_APPLICATION_CREDENTIALS | docker login -u _json_key --password-stdin https://asia.gcr.io'
+                        sh 'docker tag scb/nginx asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'
+                        sh 'docker push asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'
                     }
+                }
+            }
         }
-
-                    
-    
-    } 
+    }
 }

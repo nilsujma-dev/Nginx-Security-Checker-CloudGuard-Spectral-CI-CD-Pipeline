@@ -11,7 +11,8 @@ pipeline {
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
         GCR_JSON_KEY = credentials('GCR_JSON_KEY')
-    }
+
+         }
 
     stages {
         stage('Clone Github repository') {
@@ -22,13 +23,13 @@ pipeline {
 
         stage('install Spectral') {
             steps {
-                sh "curl -L 'https://spectral-us.checkpoint.com/latest/x/sh?key=\$SPECTRAL_KEY' | sh"
+                sh "curl -L 'https://spectral-us.checkpoint.com/latest/x/sh?key=$SPECTRAL_KEY' | sh"
             }
         }
 
         stage('Pre-Build Spectral Scan for Secrets,Misconfiguration and IaC') {
             steps {
-                sh "\$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
+                sh "$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
             }
         }
 
@@ -57,18 +58,20 @@ pipeline {
 
         stage('Post-Build Spectral Scan for Secrets,Misconfiguration and IaC') {
             steps {
-                sh "\$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
+                sh "$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
             }
         }
+
 
         stage('Docker Login and Push Image') {
             steps {
                 script {
-                    sh 'echo \$DOCKER_PASSWORD | docker login scb-harbor.cpdevsecops.net --username \$DOCKER_USERNAME --password-stdin'
+                    sh 'echo $DOCKER_PASSWORD | docker login scb-harbor.cpdevsecops.net --username $DOCKER_USERNAME --password-stdin'
                     sh 'docker tag scb/nginx scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
                     sh 'docker push scb-harbor.cpdevsecops.net/scb-playground/nginx-web:latest'
-                }
-            }
+
+                        }
+                    }
         }
 
         stage('Docker Login and Push Image to GCR') {
