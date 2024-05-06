@@ -11,6 +11,8 @@ pipeline {
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
         GCR_JSON_KEY = credentials('GCR_JSON_KEY')
+        KUBECONFIG = credentials('jenkins-gke-kubeconfig')
+
 
          }
 
@@ -81,6 +83,18 @@ pipeline {
                         sh 'cat \$GOOGLE_APPLICATION_CREDENTIALS | docker login -u _json_key --password-stdin https://asia.gcr.io'
                         sh 'docker tag scb/nginx asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'
                         sh 'docker push asia.gcr.io/chkp-gcp-sales-nilsu-box/scb-playground/nginx-web:latest'
+                    }
+                }
+            }
+
+        stage('Deploy to GKE') {
+            steps {
+                script {
+                    // Use the kubeconfig file uploaded to Jenkins
+                    withCredentials([file(credentialsId: 'jenkins-gke-kubeconfig', variable: 'KUBECONFIG')]) {
+                        // Commands to apply Kubernetes configurations, assuming you have deployment.yaml in your repository
+                        sh "kubectl apply -f deployment.yaml --kubeconfig=\$KUBECONFIG"
+                        // Add other kubectl commands as needed
                     }
                 }
             }
