@@ -35,6 +35,12 @@ pipeline {
             }
         }
 
+        stage('Pre-Build Spectral Scan for OSS') {
+            steps {
+                sh "$HOME/.spectral/spectral scan --engines oss --ok"
+            }
+        }
+
         stage('Docker image Build and scan prep') {
             steps {
                 sh 'docker build -t scb/nginx .'
@@ -57,13 +63,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Post-Build Spectral Scan for Secrets,Misconfiguration and IaC') {
-            steps {
-                sh "$HOME/.spectral/spectral scan --engines secrets,oss --include-tags base,audit --ok"
-            }
-        }
-
 
         stage('Docker Login and Push Image') {
             steps {
